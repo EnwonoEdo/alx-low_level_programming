@@ -1,4 +1,6 @@
-#include "main.h"
+#include "kasiye.h"
+#include "kasiye.h"
+#include "kasiye.h"
 
 /**
 * _atoi - function that convert a string to an integer.
