@@ -1,51 +1,91 @@
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "variadic_functions.h"
- 
 /**
- * print_all - a function that prints anything
- *
- * @format: A string of character representing
- *          the argument types
- *
- * Description: If any argument not of type char,
- *              int, float or char * is ignored
- *
- * Return: nothing
-*/
+ * print_c - prints char
+ * @a: list to give
+ * Return: always 0
+ */
+int print_c(va_list a)
+{
+	printf("%c", va_arg(a, int));
+	return (0);
+}
+/**
+ * print_i - prints int
+ * @a: list to give
+ * Return: always 0
+ */
+int print_i(va_list a)
+{
+	printf("%d", va_arg(a, int));
+	return (0);
+}
+/**
+ * print_f - prints float
+ * @a: list to give
+ * Return: always 0
+ */
+int print_f(va_list a)
+{
+	printf("%f", va_arg(a, double));
+	return (0);
+}
+/**
+ * print_s - prints string
+ * @a: list to give
+ * Return: always 0
+ */
+int print_s(va_list a)
+{
+	char *s;
 
+	s = va_arg(a, char *);
+	if (s == NULL)
+	{
+		printf("(nil)");
+		return (0);
+	}
+	printf("%s", s);
+	return (0);
+}
+/**
+ * print_all - prints all
+ * @format: format string that says arg types
+ *
+ */
 void print_all(const char * const format, ...)
 {
-	va_list ap;
-	int i = 0, j = 0;
-	char *separator = "";
-	func_printer funcs[] = {
-		{"c", print_char},
-		{"i", print_int},
-		{"f", print_float},
-		{"s", print_string}
+	int i, j;
+	char *sep = "";
+	char *sep2 = ", ";
+	va_list anyArgs;
+	printer ops[] = {
+		{"c", print_c},
+		{"i", print_i},
+		{"s", print_s},
+		{"f", print_f},
+		{NULL, NULL}
 	};
 
-	va_start(ap, format);
-
-	while (format && format[i])
+	va_start(anyArgs, format);
+	i = 0;
+	while (format != NULL && format[i])
 	{
 		j = 0;
-		/**
-		 * 4 equals to the number of funcs present
-		 * so if j is less than four and our current
-		 * format is not equal to format in funcs
-		 * then j becomes j + 1
-		 */
-		while (j < 4 && (format[i] != *(funcs[j].symbol)))
-			j++;
-		if (j < 4)
+		while (ops[j].f != NULL)
 		{
-			printf("%s", separator);
-			funcs[j].print_func(ap);
-			separator = ", ";
+			if (format[i] == *(ops[j].c))
+			{
+				printf("%s", sep);
+				ops[j].f(anyArgs);
+			}
+			j++;
 		}
+		sep = sep2;
 		i++;
 	}
 	printf("\n");
-
-	va_end(ap);
+	va_end(anyArgs);
 }
